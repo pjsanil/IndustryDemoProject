@@ -179,7 +179,7 @@ namespace IndustryDemo.Controllers
 
 			return CreatedAtAction("GetSales", new { id = sales.Id }, sales);
 		}
-
+		
 		// DELETE: api/Sales/5
 		[HttpDelete("{id}")]
 		public async Task<ActionResult<Sales>> DeleteSales(int id)
@@ -195,7 +195,7 @@ namespace IndustryDemo.Controllers
 
 			return sales;
 		}
-
+		
 		private bool SalesExists(int id)
 		{
 			return _context.Sales.Any(e => e.Id == id);

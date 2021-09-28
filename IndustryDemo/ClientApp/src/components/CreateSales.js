@@ -49,10 +49,8 @@ const customerDropDown=customer.map((r)=> (
 
 
 const createSalesDetails=()=>{
-  console.log("Data Insertion check")
- console.log(cus)
- console.log(pro)
- console.log(stor)
+ 
+
 axios.post('sales/PostSales',{
   Customerid:cus,
 
@@ -63,8 +61,7 @@ DateSold:new Date(moment(Date.now()).format("L"))
  //DateSold:new Date(moment(Date.now()).format("L"))
 })
 .then(s=>{
-  console.log("enterd the box")
-  console.log(s.data)
+  
   createPopupFunction(false)
 
 })

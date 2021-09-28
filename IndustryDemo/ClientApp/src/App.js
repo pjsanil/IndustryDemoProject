@@ -19,10 +19,10 @@ export default class App extends Component {
         {/* <Route exact path='/' component={Home} />
         <Route path='/counter' component={Counter} /> */}
         
-        <Route path='/fetch-customer' component={FetchCustomers} />
-        <Route path='/fetch-product' component={FetchProduct} />
-        <Route path='/fetch-sales' component={FetchSales} />
-        <Route path='/fetch-stores' component={FetchStore} />
+        <Route path='/customers' component={FetchCustomers} />
+        <Route path='/products' component={FetchProduct} />
+        <Route path='/sales' component={FetchSales} />
+        <Route path='/stores' component={FetchStore} />
        
       </Layout>
     );
