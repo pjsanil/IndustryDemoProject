@@ -6,7 +6,7 @@ import 'semantic-ui-css/semantic.min.css';
 import CreateStore from './CreateStore';
 import EditStore from './EditStore';
 import DeleteStore from './DeleteStore';
-
+import PaginationCustomer from "./PaginationCustomer";
 import { Icon, Table, Button, Menu,NavItem,NavLink } from 'semantic-ui-react'
 
 console.log("test stroe")
@@ -22,9 +22,12 @@ export class FetchStore extends Component {
 			Id:0,
 			name:'',
 			address:'',
+			Aaddress:'',
 			editpopup:false,
-			deletepopup:false
-
+			deletepopup:false,
+			currentPage: 1,
+			postsPerPage: 5,
+			storePag: [],
 			
 		};
 		console.log("after construvtor")
@@ -32,7 +35,11 @@ export class FetchStore extends Component {
 		
 	}
 	componentDidMount() {
-		console.log("componentdidmount")
+		this.setState({
+			currentPage: 1,
+			postsPerPage: 5,
+		  });
+
 		this.fetchStoreDetails();
 	}
 	// componentWillUnmount() {
@@ -56,6 +63,16 @@ export class FetchStore extends Component {
                     loading: false,
 
                 })
+
+
+				const indexOfLastPage =this.state.currentPage * this.state.postsPerPage;
+			    const indexOfFirstPost = indexOfLastPage - this.state.postsPerPage;
+			          this.setState({
+						             storePag: this.state.custom.slice(
+				                     indexOfFirstPost,
+				                     indexOfLastPage
+				                          ),
+			                        });
              
             })
             .catch(
@@ -64,7 +81,12 @@ export class FetchStore extends Component {
                 })
     }
 
-
+	paginate = (number) => {
+        this.setState({
+      currentPage: number,
+    });
+       this.fetchStoreDetails();
+  };
 	
 	DeleteDetails=(value,rId)=> {
 		console.log("entering deletedetails")
@@ -92,11 +114,14 @@ console.log(this.state.editpopup)
 
 
 	EditStoreDetails=(value,rId,rname,raddress)=> {
-
+		console.log("tset store edit from fetch")
+		
 		this.setState({editpopup:value})
 		this.setState({Id:rId})
 		this.setState({name:rname})
 		this.setState({address:raddress})
+		console.log(this.state.address)
+		
 		   if(value===false)
 		   {console.log("entering")
 			this.fetchStoreDetails();
@@ -108,7 +133,7 @@ console.log(this.state.editpopup)
 
 	render() {
 		console.log("render");
-		const { custom,popup, loading,editpopup,deletepopup,Id } = this.state//destructuring
+		const { custom,popup, loading,editpopup,deletepopup,Id,postsPerPage,storePag } = this.state//destructuring
 		console.log(loading);
 		 if (loading) {
 		 	return (
@@ -126,7 +151,8 @@ console.log(this.state.editpopup)
                 </NavItem> */}
 
 					 {/* <p><Link to='/CreateCustomer'>CreateCustomer</Link></p> */}
-                     <EditStore open={editpopup} createStoreDetails={this.createStoreDetails} Id={this.state.Id} name={this.state.name} Address={this.state.address} EditStoreDetails={this.EditStoreDetails}/>
+					
+                     <EditStore open={editpopup}  Id={this.state.Id} name={this.state.name} address={this.state.address} EditStoreDetails={this.EditStoreDetails}/>
 					 <CreateStore open={popup} Id={this.state.Id} createStoreDetails={this.createStoreDetails}/>
 					  <DeleteStore open={deletepopup} Id={this.state.Id} DeleteDetails={this.DeleteDetails}/>
 					 <Button content='New Store' primary onClick={()=>this.createStoreDetails(true)} />
@@ -142,7 +168,7 @@ console.log(this.state.editpopup)
 						</Table.Header>
 						<Table.Body>
 							
-							{custom.map((r) => (
+							{storePag.map((r) => (
 								<Table.Row key={r.id}>
 									<Table.Cell collapsing>
 										{r.name}
@@ -168,22 +194,18 @@ console.log(this.state.editpopup)
 							))}
 						</Table.Body>
 						<Table.Footer>
-							<Table.Row>
-								<Table.HeaderCell colSpan='4'>
-									<Menu floated='right' pagination>
-										<Menu.Item as='a' icon>
-											<Icon name='chevron left' />
-										</Menu.Item>
-										<Menu.Item as='a'>1</Menu.Item>
-										<Menu.Item as='a'>2</Menu.Item>
-										<Menu.Item as='a'>3</Menu.Item>
-										<Menu.Item as='a'>4</Menu.Item>
-										<Menu.Item as='a' icon>
-											<Icon name='chevron right' />
-										</Menu.Item>
-									</Menu>
-								</Table.HeaderCell>
-							</Table.Row>
+						<Table.Row>
+						<Table.HeaderCell colSpan='4'>
+						<PaginationCustomer
+            postsPerPage={postsPerPage}
+            totalPosts={custom.length}
+            parent="FetchProduct"
+            paginate={this.paginate}
+          />
+		  </Table.HeaderCell>
+					</Table.Row>	
+         
+						
 						</Table.Footer>
 					</Table>
 				</div>

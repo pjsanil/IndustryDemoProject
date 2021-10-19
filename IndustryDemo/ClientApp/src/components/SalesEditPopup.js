@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState,Component } from 'react'
 import { Button, Header, Image, Modal, Form, Dropdown, DateInput } from 'semantic-ui-react'
 //import SalesCustomerDropdown from './SalesCustomerDropdown'
 import axios from 'axios'
@@ -9,14 +9,52 @@ import moment from "moment";
 
 export default function SalesEditPopup(props) {
   //const [open, setOpen] = React.useState(false)
-  const { open, custom ,cust,prodct,stre,editPopupFunction,cus1,prd1,str1,dat1,id} = props
+
+  const { open, custom ,cust,prodct,stre,editPopupFunction,customerName,productName,storeName,soldDate,saleId,custid,prodid,storeid} = props
   
-const [cus,setCus]=useState(0)
-const [pro,setPro]=useState(0)
-const [stor,setStor]=useState(0)
-const[dto,setDto]=useState(0)
-  console.log("Custom value")
-  console.log(custom)
+  
+
+let [cus,setCus]=useState(customerName)
+//const [pro,setPro]=useState(productName)
+//const [stor,setStor]=useState(storeName)
+const[dto,setDto]=useState(soldDate)
+//let[cid,setCId]=useState(0)
+let[saleData,setSale]=useState(saleId)
+let[cusid,setCustId]=useState(custid)
+let[productid,setProdId]=useState(prodid)
+let[stoid,setStoreId]=useState(storeid)
+console.log("2345")
+console.log(props.soldDate)
+console.log(custid)
+
+console.log(props.prodid)
+console.log(props.storeid)
+
+  const handleDateChange=(e)=> {
+    setDto(e.target.value)
+  }
+
+ 
+
+  useEffect(() => {
+    //console.clear();
+   // console.log("the value is",cusid)
+   
+    return () => {
+        // Cleanup function
+    }
+}, [cusid,productid,stoid,cus,dto])
+
+
+
+  // useEffect(()=>{
+  //   //console.log("use effect execution test")
+  //   setCustId(cusid)
+  //   setPro(productName)
+  //   setStor(storeName)
+
+  // },[cusid,productName,storeName])
+  
 
   const customerDropDown = cust.map((r) => (
     {
@@ -43,64 +81,93 @@ const[dto,setDto]=useState(0)
     
         }))
 
+       
 
+         
+  const createSale = (cusid1,productid1,storeid1,dto1) => {
+   console.clear()
+    console.log("0000000")
+    console.log(props.soldDate)
+    console.log(dto1)
+    console.log(storeid)
+    console.log(cusid1)
+    console.log(productid1)
+   if(cusid1===0)
+   {
+     console.log("1")
+     cusid1=props.custid;
+   }
 
-//axios gona come here+-
-  const createSale = () => {
-    let d=moment(Date.now()).format("YYYY-MM-DD ")
+   if(productid1===0)
+   {
+     console.log("2")
+     productid1=props.prodid;
+   }
+   if(storeid1===0)
+   {
+     console.log("3")
+     storeid1=props.storeid;
+   }
 
-    axios.put(`sales/PutSales/${id}`,{
-        Id:id,
-        Productid:pro,
-        Customerid:cus,
-        Storeid:stor,
-        DateSold:new Date(moment(Date.now()).format("L"))
+   if(dto1==="")
+   {
+     console.log("114")
+     dto1=props.soldDate;
+   }
+    //  console.log(props.saleId)
+    //  console.log(dto1)
+    // console.log(storeid)
+    // console.log(cusid1)
+    // console.log(productid1)
+    axios.put(`sales/PutSales/${props.saleId}`,{
+        Id:props.saleId,
+        Productid:productid1,
+        Customerid:cusid1,
+        Storeid:storeid1,
+        //DateSold:new Date(moment(Date.now()).format("L"))
+        DateSold:dto1
     } )
-    editPopupFunction(false)
-  }
+    .then(res => {
+      console.log("qwerty" + res.data);
+      editPopupFunction(false)
+
+  })
+  .catch(err => console.log(err.response))
   
-//date stuff
-  const [date, setDate] = useState(null);
-//  const handleDateChange = (event, data) => setDate(data.value);
- console.log("the entered date is")
+}
+  
 
-//console.log(moment(Date.now()).format("L"))
 
-//dropdown stuff
+
+
+
 const handleDropdownCustomer = (event, data1) => {
-console.log("the new way")
-  console.log(data1.value)
-  // console.log("the value of event is ")
-  // console.log(event)
-  setCus(data1.value)
+  setCustId(data1.value);
+ // cust.map((c) => (c.name === cus ? (cusid = c.id) : {}));
+ console.log("cid value")
+ console.log(cusid)
+  
   
 };
+console.log("cus test")
+console.log(cus)
 
 const handleDropdownProduct = (event, data2) => {
-  console.log("the new way")
-    console.log(data2.value)
-    // console.log("the value of event is ")
-    // console.log(event)
-    setPro(data2.value)
+  setProdId(data2.value)
     
   };
 
   const handleDropdownStore = (event, data3) => {
-    console.log("the new way")
-      console.log(data3.value)
-      // console.log("the value of event is ")
-      // console.log(event)
-      setStor(data3.value)
+    setStoreId(data3.value)
       
     };
     
     const cancelSale=()=>
-    { console.log("firsthit")
+    { //console.log("firsthit")
     editPopupFunction(false)
     }
 
-
-
+    
   return (
     <Modal
 
@@ -112,63 +179,54 @@ const handleDropdownProduct = (event, data2) => {
         <Modal.Description>
           <Form style={{ width: '30%' }}>
 
-
-           
-
             <Form.Field>
             <label>Date Sold</label>
-      <input  placeholder={dat1} onChange={e=>setDto(e.target.value)}/>
-    </Form.Field>
+            <input type="date" name="DateSold" defaultValue={new Date(soldDate).toLocaleDateString("en-CA")} max={new Date().toISOString().slice(0, 10)} onChange={handleDateChange}/>
 
-      {/* <pre>
-        Selected date:
-        <br />
-        {date ? date.toString() : 'None'}
-      </pre> */}
+      {/* <input  placeholder={dat1} onChange={e=>setDto(e.target.value)}/> */}
+    </Form.Field>   
 
 </Form>
           <Form>
             <label>Customer</label>
           
-    <Dropdown
-      fluid
-     selection
-      placeholder={cus1}
-      options={customerDropDown}
-      onChange={handleDropdownCustomer}
-    />
+            <Dropdown
+                            fluid
+                            
+                            placeholder={customerName}
+                            selection={customerName}
+                              options={customerDropDown}
+                            onChange={handleDropdownCustomer}
+                        />
+
 
           </Form>
-
 
 
           <Form>
             <label>Product</label>
           
-    <Dropdown
-      fluid
-     selection
-      placeholder={prd1}
-      options={productDropDown}
-      onChange={handleDropdownProduct}
-    />
+            <Dropdown
+                            fluid
+                            selection={productName}
+                            placeholder={productName}
+                            options={productDropDown}
+                            onChange={handleDropdownProduct}
+                        />
+
 
           </Form>
-
-
-
-
-
           <Form>
             <label>Sales</label>
           
-    <Dropdown
-      fluid
-     selection
-      placeholder={str1}
-      options={storeDropDown}
-      onChange={handleDropdownStore}
-    />
+            <Dropdown
+                            fluid
+                            selection={storeName}
+                            placeholder={storeName}
+                            options={storeDropDown}
+                            onChange={handleDropdownStore}
+                        />
+
 
           </Form>
 
@@ -176,10 +234,10 @@ const handleDropdownProduct = (event, data2) => {
       </Modal.Content>
       <Modal.Actions>
         <Button color='black' onClick ={()=>cancelSale()}>
-          cancel
+          Cancel
         </Button>
-        <Button color='green' onClick={() => createSale()}  >
-          create
+        <Button color='green' onClick={() => createSale(cusid,productid,stoid,dto)}  >
+          Edit
         </Button>
 
       </Modal.Actions>

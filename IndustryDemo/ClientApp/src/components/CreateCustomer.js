@@ -1,6 +1,6 @@
 import React,{useState} from 'react'
 import axios from 'axios'
-import { Button, Header, Image, Modal,Form } from 'semantic-ui-react'
+import { Button, Header, Image, Modal,Form,DateInput } from 'semantic-ui-react'
 
 const CreateCustomer=(props)=> {
   //const [open, setOpen] = React.useState(false)
