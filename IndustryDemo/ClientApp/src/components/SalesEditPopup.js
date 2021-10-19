@@ -9,52 +9,14 @@ import moment from "moment";
 
 export default function SalesEditPopup(props) {
   //const [open, setOpen] = React.useState(false)
-
-  const { open, custom ,cust,prodct,stre,returnpagefunction,customerName,productName,storeName,soldDate,saleId,custid,prodid,storeid} = props
+  const { open, custom ,cust,prodct,stre,editPopupFunction,cus1,prd1,str1,dat1,id} = props
   
-  
-
-let [cus,setCus]=useState(customerName)
-//const [pro,setPro]=useState(productName)
-//const [stor,setStor]=useState(storeName)
-const[dto,setDto]=useState(soldDate)
-//let[cid,setCId]=useState(0)
-let[saleData,setSale]=useState(saleId)
-let[cusid,setCustId]=useState(custid)
-let[productid,setProdId]=useState(prodid)
-let[stoid,setStoreId]=useState(storeid)
-console.log("2345")
-console.log(props.soldDate)
-console.log(custid)
-
-console.log(props.prodid)
-console.log(props.storeid)
-
-  const handleDateChange=(e)=> {
-    setDto(e.target.value)
-  }
-
- 
-
-  useEffect(() => {
-    //console.clear();
-   // console.log("the value is",cusid)
-   
-    return () => {
-        // Cleanup function
-    }
-}, [cusid,productid,stoid,cus,dto])
-
-
-
-  // useEffect(()=>{
-  //   //console.log("use effect execution test")
-  //   setCustId(cusid)
-  //   setPro(productName)
-  //   setStor(storeName)
-
-  // },[cusid,productName,storeName])
-  
+const [cus,setCus]=useState(0)
+const [pro,setPro]=useState(0)
+const [stor,setStor]=useState(0)
+const[dto,setDto]=useState(0)
+  console.log("Custom value")
+  console.log(custom)
 
   const customerDropDown = cust.map((r) => (
     {

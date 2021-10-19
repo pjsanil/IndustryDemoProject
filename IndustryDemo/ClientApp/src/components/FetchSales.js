@@ -166,13 +166,12 @@ this.fetchSalesDetails()
 
 }
 
-returnpagefunction=(val)=>
-{
-    this.setState({opensales:val})
-    
+
+editPopupFunction=(val,rid,cst,prd,str,dte)=>{
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+    console.log(dte)
     if(val===false)
     {
-        console.log("entering sales 1234")
     this.fetchSalesDetails()
     }
 }
@@ -206,11 +205,7 @@ editPopupFunction=(val,rid,cst,prd,str,dte,customerid1,productid1,storeid1)=>{
     this.setState({prd1:prd})
     this.setState({str1:str})
     this.setState({dat1:dte})
-    this.setState({customerid1:customerid1})
-    this.setState({productid:productid1})
-    this.setState({storeid1:storeid1})
-  // }
-   
+    console.log("the date value is " + this.state.dat1)
 }
 
 DeleteSalesDetails=(value,rId)=> {
@@ -248,8 +243,7 @@ DeleteSalesDetails=(value,rId)=> {
                 <div margin='25px'>
                       <CreateSales open={open} custom={custom} customer={customer} products={products} stores={stores} createPopupFunction={this.createPopupFunction}/>                         
                       <DeleteSales open={deletepopup} Id={this.state.Id} DeleteSalesDetails={this.DeleteSalesDetails}/>
-                                          
-                      <SalesEditPopup open={opensales}custom={custom} cust={customer} prodct={products} stre={stores} returnpagefunction={this.returnpagefunction} customerName={cus1} productName={prd1} storeName={str1} soldDate={dat1} saleId={id} custid={customerid1} prodid={productid} storeid={storeid1} />
+                      <SalesEditPopup open={opensales}custom={custom} cust={customer} prodct={products} stre={stores} editPopupFunction={this.editPopupFunction} cus1={cus1} prd1={prd1} str1={str1} dat1={dat1} id={id}/>
                     <Button content='New Sales' primary  onClick={this.createPopupFunction} />
                    
                     <Table celled striped>
