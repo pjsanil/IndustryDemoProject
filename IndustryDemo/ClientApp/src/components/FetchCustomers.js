@@ -6,7 +6,7 @@ import 'semantic-ui-css/semantic.min.css';
 import CreateCustomer from './CreateCustomer';
 import EditCustomer from './EditCustomer';
 import DeleteCustomer from './DeleteCustomer';
-
+import PaginationCustomer from "./PaginationCustomer";
 import { Icon, Table, Button, Menu,NavItem,NavLink } from 'semantic-ui-react'
 export class FetchCustomers extends Component {
 	constructor(props) {
@@ -21,12 +21,22 @@ export class FetchCustomers extends Component {
 			address:'',
 			editpopup:false,
 			deletepopup:false,
-			popup:false
-		};
+			popup:false,
+			currentPage: 1,
+      postsPerPage: 5,
+      customerPag: [],
+	  customer:[]
+	  };
 		this.fetchCustomerDetails = this.fetchCustomerDetails.bind(this);
 	}
 	componentDidMount() {
-		console.log("componentdidmount")
+		
+		this.setState({
+			currentPage: 1,
+			postsPerPage: 5,
+		  });
+
+
 		this.fetchCustomerDetails();
 	}
 	componentWillUnmount() {
@@ -39,25 +49,41 @@ export class FetchCustomers extends Component {
 		this.setState({
 			loading: true,
 		})
-		console.log("test");
+		
 		axios.get('customers/getcustomers') 
 			.then(({ data }) => {
-				console.log(data);
+				
 				this.setState({
 					customer: data,
 					custom:data,
 					loading: false,
 				})
-
-				console.log("hola")
 				
-			})
+				const indexOfLastPage =this.state.currentPage * this.state.postsPerPage;
+			  const indexOfFirstPost = indexOfLastPage - this.state.postsPerPage;
+			  this.setState({
+				customerPag: this.state.custom.slice(
+				  indexOfFirstPost,
+				  indexOfLastPage
+				),
+			});
+
+				})
+
 			.catch(
 				err => {
 					console.log(err);
 				})
 	}
 
+		
+	paginate = (number) => {
+        this.setState({
+      currentPage: number,
+    });
+       this.fetchCustomerDetails();
+  };
+		
 
 
 	
@@ -70,7 +96,7 @@ export class FetchCustomers extends Component {
 		{console.log("entering")
 		 this.fetchCustomerDetails();
 		}
-		//.catch(err=>{console.log(err.response);})
+		
 	}
 		createCustomerDetails=(value)=> {
 
@@ -107,7 +133,7 @@ if(val===false){
 
 	render() {
 		console.log("render");
-		const { custom,popup, loading,editpopup,deletepopup,Id } = this.state//destructuring
+		const { custom,popup, loading,editpopup,deletepopup,Id,postsPerPage,customer,customerPag } = this.state//destructuring
 		console.log(loading);
 		 if (loading) {
 		 	return (
@@ -138,7 +164,7 @@ if(val===false){
 							</Table.Row>
 						</Table.Header>
 						<Table.Body>
-							{custom.map((r) => (
+							{customerPag.map((r) => (
 								<Table.Row key={r.id}>
 									<Table.Cell collapsing>
 										{r.name}
@@ -162,26 +188,26 @@ if(val===false){
 									</Table.Cell>
 								</Table.Row>
 							))}
+
+
 						</Table.Body>
 						<Table.Footer>
-							<Table.Row>
-								<Table.HeaderCell colSpan='4'>
-									<Menu floated='right' pagination>
-										<Menu.Item as='a' icon>
-											<Icon name='chevron left' />
-										</Menu.Item>
-										<Menu.Item as='a'>1</Menu.Item>
-										<Menu.Item as='a'>2</Menu.Item>
-										<Menu.Item as='a'>3</Menu.Item>
-										<Menu.Item as='a'>4</Menu.Item>
-										<Menu.Item as='a' icon>
-											<Icon name='chevron right' />
-										</Menu.Item>
-									</Menu>
-								</Table.HeaderCell>
-							</Table.Row>
+						<Table.Row>
+						<Table.HeaderCell colSpan='4'>
+						<PaginationCustomer
+            postsPerPage={postsPerPage}
+            totalPosts={custom.length}
+            parent="FetchCustomers"
+            paginate={this.paginate}
+          />
+		  </Table.HeaderCell>
+					</Table.Row>	
+         
+						
 						</Table.Footer>
 					</Table>
+
+					
 				</div>
 			);
 		}

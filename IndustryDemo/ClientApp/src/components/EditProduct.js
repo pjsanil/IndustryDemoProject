@@ -1,5 +1,5 @@
 
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import axios from 'axios'
 import { Button, Header, Image, Modal,Form } from 'semantic-ui-react'
 
@@ -10,8 +10,13 @@ const {open,EditProductDetails}=props
  const[pprice,setPrice]=useState("")
 
 //  console.log(props.open);
- console.log(pname);
+ 
 
+
+ useEffect(()=>{
+  setName(props.name)
+  setPrice(props.Address)
+ },[props.name,props.Address])
 
 const CreateContent = (nam,pprice) => {
   console.log("Edit product datas1")
@@ -45,11 +50,11 @@ return (
         <Form>
                             <Form.Field>
                                 <label>Name</label>
-                                <input placeholder={props.name} onChange={(e)=>setName(e.target.value)}  />
+                                <input defaultValue={props.name} onChange={(e)=>setName(e.target.value)}  />
                             </Form.Field>
                             <Form.Field>
                                 <label>Price</label>
-                                <input placeholder={props.Address} onChange={(e)=>setPrice(e.target.value)} />
+                                <input defaultValue={props.Address} onChange={(e)=>setPrice(e.target.value)} />
                             </Form.Field>
                         </Form>
         </Modal.Description>

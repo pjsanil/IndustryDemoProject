@@ -1,20 +1,17 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import axios from 'axios'
 import { Button, Header, Image, Modal,Form } from 'semantic-ui-react'
 
 const EditCustomer=(props)=> {
   //const [open, setOpen] = React.useState(false)
 const {open,CustomerPopup,name,Address}=props
- const[CName,setName]= useState("")
- const[Caddress,setAddress]=useState("")
- console.log(props);
-//  console.log(props.open);
-
-
+ const[CName,setName]= useState('')
+ const[ Caddress,setAddress]=useState("")
 
 const CreateContent = (namec,addressc) => {
   console.log("Edit customerdata")
-  console.log(namec)
+  console.log(namec); 
+  console.log(namec )
   console.log(addressc)
     axios.put(`customers/putcustomer/ ${props.Id}`,
         {
@@ -31,6 +28,11 @@ const CreateContent = (namec,addressc) => {
         
 }
 
+useEffect(()=>{
+  setName(name)
+  setAddress(Address)
+},[name,Address]
+)
 
 return (
     <Modal
@@ -44,11 +46,13 @@ return (
         <Form>
                             <Form.Field>
                                 <label>Name</label>
-                                <input placeholder={props.name} onChange={(e)=>setName(e.target.value)}  />
+                               
+                                
+                                <input  defaultValue={name} onChange={(e)=>setName(e.target.value)} />
                             </Form.Field>
                             <Form.Field>
                                 <label>Address</label>
-                                <input placeholder={props.Address} onChange={(e)=>setAddress(e.target.value)} />
+                                <input defaultValue={Address}  onChange={(e)=>setAddress(e.target.value)} />
                             </Form.Field>
                         </Form>
         </Modal.Description>

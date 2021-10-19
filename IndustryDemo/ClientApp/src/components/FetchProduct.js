@@ -6,7 +6,7 @@ import 'semantic-ui-css/semantic.min.css';
 import CreateProduct from './CreateProduct';
 import EditProduct from './EditProduct';
 import DeleteProduct from './DeleteProduct';
-
+import PaginationCustomer from "./PaginationCustomer";
 import { Icon, Table, Button, Menu,NavItem,NavLink } from 'semantic-ui-react'
 export class FetchProduct extends Component {
 	constructor(props) {
@@ -20,12 +20,19 @@ export class FetchProduct extends Component {
 			name:'',
 			price:0,
 			editpopup:false,
-			deletepopup:false
+			deletepopup:false,
+			currentPage: 1,
+             postsPerPage: 5,
+			 productPag: [],
 		};
 		this.fetchProductDetails = this.fetchProductDetails.bind(this);
 	}
 	componentDidMount() {
-		console.log("componentdidmount")
+		this.setState({
+			currentPage: 1,
+			postsPerPage: 5,
+		  });
+
 		this.fetchProductDetails();
 	}
 	componentWillUnmount() {
@@ -43,13 +50,34 @@ export class FetchProduct extends Component {
 					custom: data,
 					loading: false,
 				})
+
+
+				const indexOfLastPage =this.state.currentPage * this.state.postsPerPage;
+			    const indexOfFirstPost = indexOfLastPage - this.state.postsPerPage;
+			          this.setState({
+						             productPag: this.state.custom.slice(
+				                     indexOfFirstPost,
+				                     indexOfLastPage
+				                          ),
+			                        });
+
+
+
+
+
+
 			})
 			.catch(
 				err => {
 					console.log(err);
 				})
 	}
-	
+	paginate = (number) => {
+        this.setState({
+      currentPage: number,
+    });
+       this.fetchProductDetails();
+  };
 	
 	deleteProductDetail=(value,rId)=> {
 
@@ -93,7 +121,7 @@ export class FetchProduct extends Component {
 
 	render() {
 		console.log("render");
-		const { custom,popup, loading,editpopup,deletepopup } = this.state//destructuring
+		const { custom,popup, loading,editpopup,deletepopup,postsPerPage,productPag } = this.state//destructuring
 		console.log(loading);
 		 if (loading) {
 		 	return (
@@ -124,7 +152,7 @@ export class FetchProduct extends Component {
 							</Table.Row>
 						</Table.Header>
 						<Table.Body>
-							{custom.map((r) => (
+							{productPag.map((r) => (
 								<Table.Row key={r.id}>
 									<Table.Cell collapsing>
 										{r.name}
@@ -150,22 +178,18 @@ export class FetchProduct extends Component {
 							))}
 						</Table.Body>
 						<Table.Footer>
-							<Table.Row>
-								<Table.HeaderCell colSpan='4'>
-									<Menu floated='right' pagination>
-										<Menu.Item as='a' icon>
-											<Icon name='chevron left' />
-										</Menu.Item>
-										<Menu.Item as='a'>1</Menu.Item>
-										<Menu.Item as='a'>2</Menu.Item>
-										<Menu.Item as='a'>3</Menu.Item>
-										<Menu.Item as='a'>4</Menu.Item>
-										<Menu.Item as='a' icon>
-											<Icon name='chevron right' />
-										</Menu.Item>
-									</Menu>
-								</Table.HeaderCell>
-							</Table.Row>
+						<Table.Row>
+						<Table.HeaderCell colSpan='4'>
+						<PaginationCustomer
+            postsPerPage={postsPerPage}
+            totalPosts={custom.length}
+            parent="FetchProduct"
+            paginate={this.paginate}
+          />
+		  </Table.HeaderCell>
+					</Table.Row>	
+         
+						
 						</Table.Footer>
 					</Table>
 				</div>
